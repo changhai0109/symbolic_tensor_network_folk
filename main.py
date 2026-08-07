@@ -333,6 +333,35 @@ def main():
                        temporal_parallel_dims, num_stacks, args,
                        generated_filename, "Dense", absorb_ep_into_tp=True)
 
+    elif args.model_type == "prefilling":
+        from models.stage1.prefilling_model import prefilling as transformer_fn
+
+        print("Assembling prefilling model (dense/llama)")
+        graph = transformer_fn(num_stacks, template_dir="tpsp_prefilling", regenerate=True)
+        _process_model(graph, symbol_map_value, [dp, tp, spp],
+                       temporal_parallel_dims, num_stacks, args,
+                       generated_filename, "Prefilling", absorb_ep_into_tp=True)
+
+    elif args.model_type == "prefilling_gpt":
+        from models.stage1.prefilling_model import prefilling as transformer_fn
+
+        template_dir = "tpsp_gpt_prefilling" if args.tpsp else "tp_gpt_prefilling"
+        print(f"Assembling prefilling GPT model (tpsp={args.tpsp})")
+        graph = transformer_fn(num_stacks, template_dir=template_dir, regenerate=True)
+        _process_model(graph, symbol_map_value, [dp, tp, spp],
+                       temporal_parallel_dims, num_stacks, args,
+                       generated_filename, "Prefilling", absorb_ep_into_tp=True)
+
+    elif args.model_type == "prefilling_moe":
+        from models.stage1.prefilling_moe_model import prefilling_moe as transformer_fn
+
+        assert args.tpsp
+        print("Assembling prefilling MoE model")
+        graph = transformer_fn(num_stacks, symbol_map_value, regenerate=True)
+        _process_model(graph, symbol_map_value, [dp, tp, spp, ep],
+                       temporal_parallel_dims, num_stacks, args,
+                       generated_filename, "PrefillingMoE")
+
     elif args.model_type == "moe":
         from models.stage1.moe_model import transformer as transformer_moe
 
