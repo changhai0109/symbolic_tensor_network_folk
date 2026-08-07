@@ -362,6 +362,38 @@ def main():
                        temporal_parallel_dims, num_stacks, args,
                        generated_filename, "PrefillingMoE")
 
+    elif args.model_type == "decoding":
+        from models.stage1.decoding_model import decoding as transformer_fn
+
+        assert args.sp == 1, "Decoding model requires sp=1 (seq=1 per step, cannot sequence-parallel a single token)"
+        print("Assembling decoding model (dense/llama)")
+        graph = transformer_fn(num_stacks, template_dir="tpsp_decoding", regenerate=True)
+        _process_model(graph, symbol_map_value, [dp, tp, spp],
+                       temporal_parallel_dims, num_stacks, args,
+                       generated_filename, "Decoding", absorb_ep_into_tp=True)
+
+    elif args.model_type == "decoding_gpt":
+        from models.stage1.decoding_model import decoding as transformer_fn
+
+        assert args.sp == 1, "Decoding model requires sp=1 (seq=1 per step, cannot sequence-parallel a single token)"
+        template_dir = "tpsp_gpt_decoding" if args.tpsp else "tp_gpt_decoding"
+        print(f"Assembling decoding GPT model (tpsp={args.tpsp})")
+        graph = transformer_fn(num_stacks, template_dir=template_dir, regenerate=True)
+        _process_model(graph, symbol_map_value, [dp, tp, spp],
+                       temporal_parallel_dims, num_stacks, args,
+                       generated_filename, "Decoding", absorb_ep_into_tp=True)
+
+    elif args.model_type == "decoding_moe":
+        from models.stage1.decoding_moe_model import decoding_moe as transformer_fn
+
+        assert args.sp == 1, "Decoding model requires sp=1 (seq=1 per step, cannot sequence-parallel a single token)"
+        assert args.tpsp
+        print("Assembling decoding MoE model")
+        graph = transformer_fn(num_stacks, symbol_map_value, regenerate=True)
+        _process_model(graph, symbol_map_value, [dp, tp, spp, ep],
+                       temporal_parallel_dims, num_stacks, args,
+                       generated_filename, "DecodingMoE")
+
     elif args.model_type == "moe":
         from models.stage1.moe_model import transformer as transformer_moe
 
