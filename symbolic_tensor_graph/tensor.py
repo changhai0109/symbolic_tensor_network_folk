@@ -122,6 +122,16 @@ class Tensor:
         for dim in shape:
             size *= dim
         return size
+    
+    @staticmethod
+    def eval_shape(shape_sym, target_symbol_value_dict):
+        shape_num = []
+        for dim_sym in shape_sym:
+            dim_num = Tensor.eval_expr(dim_sym, target_symbol_value_dict)
+            shape_num.append(dim_num)
+        if isinstance(shape_sym, tuple):
+            return tuple(shape_num)
+        return shape_num
 
     @staticmethod
     def parse_id(id_):

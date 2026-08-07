@@ -20,6 +20,7 @@ class NodeBackendBase:
             backend_node,
             frontend_inputs,
             frontend_outputs,
+            node
         )
         cls.set_data_deps(frontend_node.data_deps, backend_node)
         cls.set_ctrl_deps(frontend_node.ctrl_deps, backend_node)
@@ -82,7 +83,7 @@ class NodeBackendBase:
 
     @classmethod
     def set_node_common_attrs(
-        cls, id, name, node_type, y_tensor_size, backend_node, inputs, outputs
+        cls, id, name, node_type, y_tensor_size, backend_node, inputs, outputs, frontend_node=None
     ):
         raise NotImplementedError()
 

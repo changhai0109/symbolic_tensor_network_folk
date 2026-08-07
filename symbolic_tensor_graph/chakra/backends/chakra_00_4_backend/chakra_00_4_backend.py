@@ -37,8 +37,22 @@ class Chakra004Backend(NodeBackendBase):
         return Node()
 
     @classmethod
+    def set_optional_attr(cls, backend_node, frontend_node=None):
+        if frontend_node is None:
+            return
+        optional_attr = {}
+        if hasattr(frontend_node, "y_tensor_shape"):
+            optional_attr["y_shape"] = frontend_node.y_tensor_shape
+        # TODO: add more if you need
+
+        optional_attr_str = json.dumps(optional_attr)
+        optional_attr = ChakraAttr(name="optional")
+        optional_attr.string_val = optional_attr_str
+        backend_node.attr.append(optional_attr)
+
+    @classmethod
     def set_node_common_attrs(
-        cls, id, name, node_type, y_tensor_size, backend_node, inputs, outputs
+        cls, id, name, node_type, y_tensor_size, backend_node, inputs, outputs, frontend_node=None
     ):
         def _get_backend_node_type(_frontend_node_type):
             if _frontend_node_type == FrontendNode.NodeType.COLL_COMM_NODE:

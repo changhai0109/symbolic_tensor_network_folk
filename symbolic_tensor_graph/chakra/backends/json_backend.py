@@ -19,7 +19,7 @@ class JsonBackend(NodeBackendBase):
 
     @classmethod
     def set_node_common_attrs(
-        cls, id_, name, node_type, y_tensor_size, backend_node, inputs, outputs
+        cls, id_, name, node_type, y_tensor_size, backend_node, inputs, outputs, frontend_node=None
     ):
         def _get_backend_node_type(_frontend_node_type):
             frontend_node_type_map_string = {
@@ -41,6 +41,9 @@ class JsonBackend(NodeBackendBase):
             assert outputs is not None
             backend_node["inputs"] = inputs
             backend_node["outputs"] = outputs
+        if not frontend_node is None:
+            if hasattr(frontend_node, "y_tensor_shape"):
+                backend_node["y_tensor_shape"] = frontend_node.y_tensor_shape
 
     @classmethod
     def set_data_deps(cls, data_deps, backend_node):

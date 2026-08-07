@@ -190,7 +190,7 @@ def main():
 
     os.makedirs(args.output_dir, exist_ok=True)
     if not "%d" in args.output_name:
-        args.output_name = f"{args.output_name}.%d.et"
+        args.output_name = f"{args.output_name}.%d.json"
     generated_filename = os.path.join(args.output_dir, args.output_name)
     dp, tp, pp, spp, ep, fsdp = sp.symbols("dp tp pp cp ep fsdp")
     (
@@ -319,6 +319,7 @@ def main():
         from symbolic_tensor_graph.chakra.backends.chakra_00_4_backend import (
             Chakra004Backend as ReadoutBackend,
         )
+        from symbolic_tensor_graph.chakra.backends.json_backend import JsonBackend as ReadoutBackend
 
         if os.environ.get("STAGE_MICROBATCH_OPTIMIZE", "0") != "0":
             distributed_chakra_graph_dense = MicroBatchReplicatorPostProcess.apply(
@@ -403,6 +404,7 @@ def main():
         from symbolic_tensor_graph.chakra.backends.chakra_00_4_backend import (
             Chakra004Backend as ReadoutBackend,
         )
+        from symbolic_tensor_graph.chakra.backends.json_backend import JsonBackend as ReadoutBackend
 
         print("Dense model: reading out")
         if os.environ.get("STAGE_MICROBATCH_OPTIMIZE", "0") != "0":
@@ -485,6 +487,7 @@ def main():
         from symbolic_tensor_graph.chakra.backends.chakra_00_4_backend import (
             Chakra004Backend as ReadoutBackend,
         )
+        from symbolic_tensor_graph.chakra.backends.json_backend import JsonBackend as ReadoutBackend
 
         print("MoE model: reading out")
         if os.environ.get("STAGE_MICROBATCH_OPTIMIZE", "0") != "0":
@@ -555,6 +558,7 @@ def main():
         from symbolic_tensor_graph.chakra.backends.chakra_00_4_backend import (
             Chakra004Backend as ReadoutBackend,
         )
+        from symbolic_tensor_graph.chakra.backends.json_backend import JsonBackend as ReadoutBackend
 
         print("MoE model: reading out")
         if os.environ.get("STAGE_MICROBATCH_OPTIMIZE", "0") != "0":

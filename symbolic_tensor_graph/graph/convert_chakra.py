@@ -89,12 +89,18 @@ class ConvertChakra:
                 x2_tensor_size = Tensor.eval_expr(
                     Tensor.eval_size(tensor.x2_shape), symbol_map_value
                 )
+            
             # tensor_size = y_tensor_size + x1_tensor_size + x2_tensor_size     # if you use old roofline that dont count input tensor size, use this.
             tensor_size = y_tensor_size
             comp_node.tensor_size = tensor_size
             comp_node.y_tensor_size = y_tensor_size
+            
+            y_tensor_shape = Tensor.eval_shape(tensor.y_shape, symbol_map_value)
+            comp_node.y_tensor_shape = y_tensor_shape
+            
             comp_node.op_type = tensor.op_type
             nodes_this_tensor[HybridGraph.NodeType.COMP] = comp_node
+
 
     @classmethod
     def _insert_comm_x1(
@@ -140,6 +146,10 @@ class ConvertChakra:
                     Tensor.eval_size(tensor.x1_shape), symbol_map_value
                 )
                 x1_comm_node.y_tensor_size = output_size
+
+                tensor_shape = Tensor.eval_shape(tensor.x1_shape, symbol_map_value)
+                x1_comm_node.y_tensor_shape = tensor_shape
+
                 comm_nodes.append(x1_comm_node)
             if HybridGraph.NodeType.COMP in nodes_this_tensor and len(comm_nodes) > 0:
                 nodes_this_tensor[HybridGraph.NodeType.COMP].data_deps.append(
@@ -195,6 +205,10 @@ class ConvertChakra:
                     Tensor.eval_size(tensor.x2_shape), symbol_map_value
                 )
                 x2_comm_node.y_tensor_size = output_size
+
+                tensor_shape = Tensor.eval_shape(tensor.x2_shape, symbol_map_value)
+                x2_comm_node.y_tensor_shape = tensor_shape
+
                 comm_nodes.append(x2_comm_node)
             if HybridGraph.NodeType.COMP in nodes_this_tensor and len(comm_nodes) > 0:
                 nodes_this_tensor[HybridGraph.NodeType.COMP].data_deps.append(
