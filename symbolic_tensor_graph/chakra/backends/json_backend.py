@@ -44,6 +44,12 @@ class JsonBackend(NodeBackendBase):
         if not frontend_node is None:
             if hasattr(frontend_node, "y_tensor_shape"):
                 backend_node["y_tensor_shape"] = frontend_node.y_tensor_shape
+            if hasattr(frontend_node, "x1_tensor_shape"):
+                backend_node["x1_tensor_shape"] = frontend_node.x1_tensor_shape
+            if hasattr(frontend_node, "x2_tensor_shape"):
+                backend_node["x2_tensor_shape"] = frontend_node.x2_tensor_shape
+            if hasattr(frontend_node, "op_attr"):
+                backend_node["op_attr"] = frontend_node.op_attr
 
     @classmethod
     def set_data_deps(cls, data_deps, backend_node):

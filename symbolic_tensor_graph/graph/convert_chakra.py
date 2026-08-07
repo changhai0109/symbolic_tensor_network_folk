@@ -97,6 +97,16 @@ class ConvertChakra:
             
             y_tensor_shape = Tensor.eval_shape(tensor.y_shape, symbol_map_value)
             comp_node.y_tensor_shape = y_tensor_shape
+
+            if tensor.x1_shape is not None:
+                x1_tensor_shape = Tensor.eval_shape(tensor.x1_shape, symbol_map_value)
+                comp_node.x1_tensor_shape = x1_tensor_shape
+            
+            if tensor.x2_shape is not None:
+                x2_tensor_shape = Tensor.eval_shape(tensor.x2_shape, symbol_map_value)
+                comp_node.x2_tensor_shape = x2_tensor_shape
+            if tensor.op_attr is not None:
+                comp_node.op_attr = tensor.op_attr
             
             comp_node.op_type = tensor.op_type
             nodes_this_tensor[HybridGraph.NodeType.COMP] = comp_node
