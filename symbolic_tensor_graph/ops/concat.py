@@ -1,3 +1,4 @@
+import sympy as sp
 from .op_base import OPBase
 
 
@@ -14,10 +15,10 @@ class Concat(OPBase):
         x1_hidden = tensor.x1_hidden
         x2_hidden = tensor.x2_hidden
         assert op_attr is not None
-        
+
         dim = int(op_attr)
         assert len(x1_shape) == len(x2_shape)
-        assert x1_hidden == x2_hidden
+        assert sp.simplify(x1_hidden[0] - x2_hidden[0]) == 0
         
         if dim < 0:
             dim += len(x1_shape)

@@ -1,0 +1,11 @@
+id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr
+q,N,,,T,,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,,,,
+k_this,N,,,T,,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,,,,
+v_this,N,,,T,,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,,,,
+k_old,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,
+v_old,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,
+k,N,k_old,k_this,C,1,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,,
+v,N,v_old,v_this,C,1,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,,
+k1,N,k,,I,,"Batch/dp, Seq+1, Dmodel/Head, Head/tp",1,,,,
+v1,N,v,,I,,"Batch/dp, Seq+1, Dmodel/Head, Head/tp",1,,,,
+qkv,N,q,,CUSTOM,Batch/dp*1/cp*Dmodel/Head*Head/tp*(Seq+1)*3,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,"Batch/dp, 1/cp, Dmodel/Head, Head/tp",1,,"{""data_deps"": [""k1"", ""v1""]}"
