@@ -1,3 +1,4 @@
+import json
 import os
 from .et_def.et_def_pb2 import (
     Node,
@@ -40,15 +41,12 @@ class Chakra004Backend(NodeBackendBase):
     def set_optional_attr(cls, backend_node, frontend_node=None):
         if frontend_node is None:
             return
-        optional_attr = {}
-        if hasattr(frontend_node, "y_tensor_shape"):
-            optional_attr["y_shape"] = frontend_node.y_tensor_shape
-        # TODO: add more if you need
-
-        optional_attr_str = json.dumps(optional_attr)
-        optional_attr = ChakraAttr(name="optional")
-        optional_attr.string_val = optional_attr_str
-        backend_node.attr.append(optional_attr)
+        for attr_name in ("y_tensor_shape", "x1_tensor_shape", "x2_tensor_shape", "op_attr"):
+            if hasattr(frontend_node, attr_name):
+                value = getattr(frontend_node, attr_name)
+                attr = ChakraAttr(name=attr_name)
+                attr.string_val = json.dumps(value)
+                backend_node.attr.append(attr)
 
     @classmethod
     def set_node_common_attrs(
@@ -90,6 +88,8 @@ class Chakra004Backend(NodeBackendBase):
             output_attr = ChakraAttr(name="outputs")
             _frontend_IOs_to_backend(outputs, output_attr)
             backend_node.attr.append(output_attr)
+
+        cls.set_optional_attr(backend_node, frontend_node)
 
     @classmethod
     def set_data_deps(cls, data_deps, backend_node):

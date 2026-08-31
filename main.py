@@ -130,9 +130,18 @@ def _apply_weight_sharding(graph, weight_sharded):
 
 
 def _get_readout_backend():
-    """Return the JsonBackend for chakra readout."""
-    from symbolic_tensor_graph.chakra.backends.json_backend import JsonBackend
-    return JsonBackend
+    """Return the backend class for chakra readout.
+
+    Default is the Chakra v0.0.4 (protobuf) backend. Set
+    ``STAGE_READOUT_BACKEND=json`` to fall back to the JSON backend.
+    """
+    if os.environ.get("STAGE_READOUT_BACKEND", "chakra004") == "json":
+        from symbolic_tensor_graph.chakra.backends.json_backend import JsonBackend
+        return JsonBackend
+    from symbolic_tensor_graph.chakra.backends.chakra_00_4_backend import (
+        Chakra004Backend,
+    )
+    return Chakra004Backend
 
 
 def _distribute_convert_readout(graph, symbol_map_value, spatial_parallel_dims,
@@ -177,7 +186,9 @@ def _build_parse_map_value(args):
     """Parse CLI args into symbol_map_value and sympy symbol references."""
     os.makedirs(args.output_dir, exist_ok=True)
     if "%d" not in args.output_name:
-        args.output_name = f"{args.output_name}.%d.json"
+        backend = os.environ.get("STAGE_READOUT_BACKEND", "chakra004")
+        ext = ".json" if backend == "json" else ".et"
+        args.output_name = f"{args.output_name}.%d{ext}"
     generated_filename = os.path.join(args.output_dir, args.output_name)
 
     dp, tp, pp, spp, ep, fsdp = sp.symbols("dp tp pp cp ep fsdp")
