@@ -1,4 +1,4 @@
-id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of
-x,N,,,T,,"Batch/dp, Seq/cp, Din/tp",1,,,
-w,Y,,,T,,"Din/tp, Dout",1,,,
-y,N,x,w,M,"bsm,mn->bsn","Batch/dp, Seq/cp, Din/tp",1,"Din/tp, Dout",1,
+id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr,phase
+x,N,,,T,,"Batch/dp, Seq/cp, Din/tp",1,,,,,forward
+w,Y,,,T,,"Din/tp, Dout",1,,,,,forward
+y,N,x,w,M,"bsm,mn->bsn","Batch/dp, Seq/cp, Din/tp",1,"Din/tp, Dout",1,,,forward

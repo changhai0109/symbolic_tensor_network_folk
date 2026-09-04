@@ -1,8 +1,8 @@
-﻿id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of
-x,N,,,T,,"Batch, Seq, Model",1,,,
-w,Y,,,T,,"Model, Model",1,,,
-y,N,x,w,M,"bsm,mn->bsn","Batch, Seq, Model",1,"Model, Model",1,
-res,N,x,y,A,,"Batch, Seq, Model",1,"Batch, Seq, Model",1,
-norm,N,res,,E,5,"Batch, Seq, Model",1,,,
-reshape,N,w,,R,,"Model, Model",1,Model*Model,1,
-x2,N,x,,I,,"Batch, Seq, Model",1,,,
+id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr,phase
+x,N,,,T,,"Batch, Seq, Model",1,,,,,forward
+w,Y,,,T,,"Model, Model",1,,,,,forward
+y,N,x,w,M,"bsm,mn->bsn","Batch, Seq, Model",1,"Model, Model",1,,,forward
+res,N,x,y,A,,"Batch, Seq, Model",1,"Batch, Seq, Model",1,,,forward
+norm,N,res,,E,5,"Batch, Seq, Model",1,,,,,forward
+reshape,N,w,,R,,"Model, Model",1,Model*Model,1,,,forward
+x2,N,x,,I,,"Batch, Seq, Model",1,,,,,forward

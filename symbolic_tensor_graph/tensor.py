@@ -26,6 +26,7 @@ class Tensor:
         "x2_hidden",
         "grad_of",
         "extra_attr",
+        "phase",
     ]
 
     def __init__(self, create_empty=False):
@@ -44,6 +45,7 @@ class Tensor:
         self.x2_hidden = None
         self.grad_of = None
         self._grad = None
+        self.phase = None
 
         self.revision = None
 
@@ -150,6 +152,22 @@ class Tensor:
     def stringfy_id(tensor_name, tensor_revision):
         return f"{tensor_name}@{tensor_revision}"
 
+    @staticmethod
+    def default_phase(name):
+        """Default phase inferred from the tensor leaf name.
+
+        Templates encode a tensor's execution phase explicitly in the
+        ``phase`` column (forward / backward / ...). This heuristic is only a
+        fallback for tensors whose phase was not recorded (e.g. legacy
+        templates or code-created tensors): a leaf name starting with "d"
+        denotes a gradient (backward) tensor, everything else is forward.
+        """
+        if name is None:
+            return "forward"
+        tensor_name, _ = Tensor.parse_id(name)
+        leaf = tensor_name.split(".")[-1]
+        return "backward" if leaf.startswith("d") else "forward"
+
     @property
     def id(self):
         return Tensor.stringfy_id(self.name, self.revision)
@@ -207,6 +225,7 @@ class Tensor:
         assert (
             len(terms) == len(Tensor.CSV_HEADER)
             or len(terms) == len(Tensor.CSV_HEADER) - 1
+            or len(terms) == len(Tensor.CSV_HEADER) - 2
         )
         tensor = Tensor(create_empty=True)
         tensor_name, tensor_revision = Tensor.parse_id(terms[0])
@@ -246,6 +265,11 @@ class Tensor:
             tensor.extra_attr = json.loads(terms[11])
         else:
             tensor.extra_attr = dict()
+
+        if len(terms) > 12 and (not terms[12] is None):
+            tensor.phase = str(terms[12]).strip()
+        if not tensor.phase:
+            tensor.phase = Tensor.default_phase(tensor.name)
 
         return tensor
 
@@ -290,6 +314,8 @@ class Tensor:
                 data_deps.append(tensor.id)
             extra_attr["data_deps"] = data_deps
         terms.append(json.dumps(extra_attr) if not len(extra_attr) == 0 else "")
+        phase = tensor.phase if not tensor.phase is None else Tensor.default_phase(tensor.name)
+        terms.append(phase)
         return terms
 
     @staticmethod
@@ -299,6 +325,7 @@ class Tensor:
         assert (
             list(df.columns) == Tensor.CSV_HEADER
             or list(df.columns) == Tensor.CSV_HEADER[:-1]
+            or list(df.columns) == Tensor.CSV_HEADER[:-2]
         )
         tensors = list()
         for i in range(df.shape[0]):

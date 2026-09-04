@@ -118,6 +118,7 @@ class TensorGraph:
             symbols.add(sp.parse_expr(symbol))
         assert symbols == graph.get_symbols()
         graph.sanity_check()
+        graph.validate_phases()
         return graph
 
     def sanity_check(self):
@@ -164,6 +165,35 @@ class TensorGraph:
             assert tensor.op_type == PlaceHolder.type_name
         for tensor in self.out_tensors:
             assert tensor in self.tensors
+
+    def validate_phases(self, tensors=None):
+        """Sanity check that phase labels are structurally consistent.
+
+        ``phase`` records whether a tensor is produced in the forward pass,
+        the backward pass, or is a weight-update result. Within a single
+        training graph a forward computation must never depend on a backward
+        or grad-update tensor (those only feed later passes), so flag any
+        such edge. Tensors without a phase label are skipped so legacy /
+        code-created tensors remain loadable.
+        """
+        if tensors is None:
+            tensors = self.tensors
+        violations = list()
+        for tensor in tensors:
+            if not tensor.phase == "forward":
+                continue
+            for parent in (tensor.x1, tensor.x2):
+                if parent is None:
+                    continue
+                if parent.phase in ("backward", "grad_update"):
+                    violations.append(
+                        f"forward tensor {tensor.id} consumes "
+                        f"{parent.phase} tensor {parent.id}"
+                    )
+        if len(violations) > 0:
+            raise AssertionError(
+                "phase sanity check failed:\n" + "\n".join(violations[:20])
+            )
 
     def visualize(self, filename, format="pdf", tensors=None):
         if tensors is None:

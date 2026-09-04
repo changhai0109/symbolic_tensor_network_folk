@@ -47,6 +47,10 @@ class Chakra004Backend(NodeBackendBase):
                 attr = ChakraAttr(name=attr_name)
                 attr.string_val = json.dumps(value)
                 backend_node.attr.append(attr)
+        if hasattr(frontend_node, "phase") and not frontend_node.phase is None:
+            attr = ChakraAttr(name="phase")
+            attr.string_val = str(frontend_node.phase)
+            backend_node.attr.append(attr)
 
     @classmethod
     def set_node_common_attrs(

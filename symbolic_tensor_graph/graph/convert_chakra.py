@@ -109,6 +109,8 @@ class ConvertChakra:
                 comp_node.op_attr = tensor.op_attr
             
             comp_node.op_type = tensor.op_type
+            if tensor.phase is not None:
+                comp_node.phase = tensor.phase
             nodes_this_tensor[HybridGraph.NodeType.COMP] = comp_node
 
 
@@ -159,6 +161,9 @@ class ConvertChakra:
 
                 tensor_shape = Tensor.eval_shape(tensor.x1_shape, symbol_map_value)
                 x1_comm_node.y_tensor_shape = tensor_shape
+
+                if tensor.phase is not None:
+                    x1_comm_node.phase = tensor.phase
 
                 comm_nodes.append(x1_comm_node)
             if HybridGraph.NodeType.COMP in nodes_this_tensor and len(comm_nodes) > 0:
@@ -218,6 +223,9 @@ class ConvertChakra:
 
                 tensor_shape = Tensor.eval_shape(tensor.x2_shape, symbol_map_value)
                 x2_comm_node.y_tensor_shape = tensor_shape
+
+                if tensor.phase is not None:
+                    x2_comm_node.phase = tensor.phase
 
                 comm_nodes.append(x2_comm_node)
             if HybridGraph.NodeType.COMP in nodes_this_tensor and len(comm_nodes) > 0:
@@ -494,6 +502,8 @@ class BundledConvertChakra:
             if not dst_readable_rank is None:
                 node._comm_readable_dst = dst_readable_rank
             node.y_tensor_size = 0
+            if tensor.phase is not None:
+                node.phase = tensor.phase
             nodes_this_tensor[f"{HybridGraph.NodeType.Y_SEND}{tag}"] = node
 
         @classmethod
@@ -512,6 +522,8 @@ class BundledConvertChakra:
             if not src_readable_rank is None:
                 node._comm_readable_src = src_readable_rank
             node.y_tensor_size = node.comm_size
+            if tensor.phase is not None:
+                node.phase = tensor.phase
             nodes_this_tensor[HybridGraph.NodeType.Y_RECV] = node
 
         @classmethod

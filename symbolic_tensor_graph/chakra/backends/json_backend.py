@@ -50,6 +50,8 @@ class JsonBackend(NodeBackendBase):
                 backend_node["x2_tensor_shape"] = frontend_node.x2_tensor_shape
             if hasattr(frontend_node, "op_attr"):
                 backend_node["op_attr"] = frontend_node.op_attr
+            if hasattr(frontend_node, "phase") and not frontend_node.phase is None:
+                backend_node["phase"] = frontend_node.phase
 
     @classmethod
     def set_data_deps(cls, data_deps, backend_node):

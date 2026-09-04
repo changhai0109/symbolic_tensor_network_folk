@@ -32,6 +32,7 @@ class GradUpdater:
         updated_tensor.x2_shape = tensor.y_shape
         updated_tensor.x2_hidden = tensor.y_hidden
         updated_tensor.revision = new_revision_fn(tensor.revision)
+        updated_tensor.phase = "grad_update"
         return updated_tensor
 
     @classmethod
@@ -102,6 +103,8 @@ class FSDPWeightGradManager:
             weight.x2_hidden = weight.x1_hidden
             weight.x1_shape = assembled_weight.x1_shape
             weight.x1_hidden = assembled_weight.x1_hidden
+        sharded_weight.phase = "forward"
+        assembled_weight.phase = "forward"
         return sharded_weight, assembled_weight
 
     @classmethod
@@ -131,6 +134,7 @@ class FSDPWeightGradManager:
         assembled_weight_backward.x1 = sharded_weight
         assembled_weight_backward.x1_shape = assembled_weight.x1_shape
         assembled_weight_backward.x1_hidden = assembled_weight.x1_hidden
+        assembled_weight_backward.phase = "backward"
 
         for weight in weights:
             backward_weight = Tensor(create_empty=True)
@@ -148,6 +152,7 @@ class FSDPWeightGradManager:
             else:
                 backward_weight.x2_shape = weight.x1_shape
                 backward_weight.x2_hidden = weight.x1_hidden
+            backward_weight.phase = "backward"
             backward_weights.append(backward_weight)
 
         weight_map_backward_weight = dict()
@@ -195,6 +200,8 @@ class FSDPWeightGradManager:
         sharded_grad.x1_hidden = sharded_weight.y_hidden
         sharded_grad.grad_of = sharded_weight
         sharded_weight._grad = sharded_grad
+        assembled_grad.phase = "backward"
+        sharded_grad.phase = "backward"
 
         return sharded_grad, assembled_grad
 
@@ -307,6 +314,7 @@ class MicroBatchReplicator:
                     continue
                 merged_grad.extra_attr["data_deps"].append(new_grad)
             old_grad_map_merged_grad[old_grad] = merged_grad
+            merged_grad.phase = "backward"
             merged_graph.tensors.append(merged_grad)
             merged_graph.out_tensors.append(merged_grad)
             for new_grad in old_grad_map_new_grads[old_grad]:

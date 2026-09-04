@@ -1,11 +1,11 @@
-﻿id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr
-q,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,
-k,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,
-v,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,
-k1,N,k,,I,,"Batch/dp, Seq, Dmodel/Head, Head/tp",1,,,,
-v1,N,v,,I,,"Batch/dp, Seq, Dmodel/Head, Head/tp",1,,,,
-qkv,N,q,,CUSTOM,"Batch/dp*Seq/cp*Dmodel/Head*Head/tp*3","Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,"{""data_deps"": [""k1"", ""v1""]}"
-dqkv,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,qkv,
-dq,N,dqkv,,CUSTOM,"Batch/dp*Seq/cp*Dmodel/Head*Head/tp*6","Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,q,
-dk,N,dqkv,,CUSTOM,"Batch/dp*Seq/cp*Dmodel/Head*Head/tp*6","Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq, Dmodel/Head, Head/tp","1/cp",,
-dv,N,dqkv,,CUSTOM,"Batch/dp*Seq/cp*Dmodel/Head*Head/tp*6","Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq, Dmodel/Head, Head/tp","1/cp",,
+id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr,phase
+q,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,,forward
+k,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,,forward
+v,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,,,forward
+k1,N,k,,I,,"Batch/dp, Seq, Dmodel/Head, Head/tp",1,,,,,forward
+v1,N,v,,I,,"Batch/dp, Seq, Dmodel/Head, Head/tp",1,,,,,forward
+qkv,N,q,,CUSTOM,Batch/dp*Seq/cp*Dmodel/Head*Head/tp*3,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,"{""data_deps"": [""k1"", ""v1""]}",forward
+dqkv,N,,,T,,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,,,qkv,,backward
+dq,N,dqkv,,CUSTOM,Batch/dp*Seq/cp*Dmodel/Head*Head/tp*6,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,q,,backward
+dk,N,dqkv,,CUSTOM,Batch/dp*Seq/cp*Dmodel/Head*Head/tp*6,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq, Dmodel/Head, Head/tp",1/cp,,,backward
+dv,N,dqkv,,CUSTOM,Batch/dp*Seq/cp*Dmodel/Head*Head/tp*6,"Batch/dp, Seq/cp, Dmodel/Head, Head/tp",1,"Batch/dp, Seq, Dmodel/Head, Head/tp",1/cp,,,backward

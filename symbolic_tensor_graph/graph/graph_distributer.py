@@ -175,6 +175,7 @@ class GraphDistributer:
         shadow.require_grads = False
         shadow.x1_shape = remote.y_shape
         shadow.x1_hidden = remote.y_hidden
+        shadow.phase = remote.phase
         return shadow
 
     @classmethod

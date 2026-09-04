@@ -115,6 +115,7 @@ def gpipe_pipeline_prepare(graph, symbol_map_value):
             new_tensor.op_attr = None
             new_tensor.grad_of = None
             new_tensor._grad = None
+            new_tensor.phase = "backward"
             merged_graph.tensors.append(new_tensor)
             from_ = new_tensor
         if len(microbatch_grads[tensor_id]) > 1:

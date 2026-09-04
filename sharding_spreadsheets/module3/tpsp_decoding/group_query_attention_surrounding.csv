@@ -1,11 +1,11 @@
-id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr
-x,N,,,T,,"Batch/dp, (1/cp)/tp, Dmodel/1",1,,,,
-wqkv,Y,,,T,,"Dmodel, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,
-qkv,N,x,wqkv,M,"bsm,mnh->bsnh","Batch/dp, (1/cp)/1, Dmodel",1,"Dmodel, Dmodel/Head, (Head+2*KVHead)/tp",1,,
-q,N,qkv,,SLICE,3:Head/tp,"Batch/dp, (1/cp)/1, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,
-k_this,N,qkv,,SLICE,3:KVHead/tp,"Batch/dp, (1/cp)/1, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,
-v_this,N,qkv,,SLICE,3:KVHead/tp,"Batch/dp, (1/cp)/1, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,
-attn,N,,,T,,"Batch/dp, (1/cp)/1, Dmodel/Head, Head/tp",1,,,,
-wo,Y,,,T,,"Dmodel/Head, Head/tp, Dmodel",1,,,,
-o1,N,attn,wo,M,"bsmh,mhn->bsn","Batch/dp, (1/cp)/1, Dmodel/Head, Head/tp",1,"Dmodel/Head, Head/tp, Dmodel",1,,
-o,N,o1,,I,,"Batch/dp, (1/cp)/tp, Dmodel/1",1,,,,
+id,require_grads,x1,x2,op_type,op_attr,x1_shape,x1_hidden,x2_shape,x2_hidden,grad_of,extra_attr,phase
+x,N,,,T,,"Batch/dp, (1/cp)/tp, Dmodel/1",1,,,,,forward
+wqkv,Y,,,T,,"Dmodel, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,,forward
+qkv,N,x,wqkv,M,"bsm,mnh->bsnh","Batch/dp, (1/cp)/1, Dmodel",1,"Dmodel, Dmodel/Head, (Head+2*KVHead)/tp",1,,,forward
+q,N,qkv,,SLICE,3:Head/tp,"Batch/dp, (1/cp)/1, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,,forward
+k_this,N,qkv,,SLICE,3:KVHead/tp,"Batch/dp, (1/cp)/1, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,,forward
+v_this,N,qkv,,SLICE,3:KVHead/tp,"Batch/dp, (1/cp)/1, Dmodel/Head, (Head+2*KVHead)/tp",1,,,,,forward
+attn,N,,,T,,"Batch/dp, (1/cp)/1, Dmodel/Head, Head/tp",1,,,,,forward
+wo,Y,,,T,,"Dmodel/Head, Head/tp, Dmodel",1,,,,,forward
+o1,N,attn,wo,M,"bsmh,mhn->bsn","Batch/dp, (1/cp)/1, Dmodel/Head, Head/tp",1,"Dmodel/Head, Head/tp, Dmodel",1,,,forward
+o,N,o1,,I,,"Batch/dp, (1/cp)/tp, Dmodel/1",1,,,,,forward
